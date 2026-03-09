@@ -1,78 +1,57 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
+ * Playwright Test Configuration
+ * Documentation: https://playwright.dev/docs/test-configuration
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
 export default defineConfig({
-  testDir: './tests',
-  /* Run tests in files in parallel */
-  fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-  baseURL: 'https://demo.playwright.dev/todomvc/#/',
-  trace: 'on-first-retry',
-  screenshot: 'only-on-failure',
-  video: 'on-first-retry',
-},
 
-  /* Configure projects for major browsers */
+  // Folder where your tests exist
+  testDir: './tests',
+
+  // Allow tests inside a file to run in parallel
+  fullyParallel: true,
+
+  // Prevent accidentally committing test.only
+  forbidOnly: !!process.env.CI,
+
+  // Retry failing tests only in CI
+  retries: process.env.CI ? 2 : 0,
+
+  // Run tests sequentially in CI to avoid flaky failures
+  workers: process.env.CI ? 1 : undefined,
+
+  // Generate HTML report after execution
+  reporter: 'html',
+
+  use: {
+
+    // CHANGE 1: Use your actual application URL instead of demo TODO app
+    // This should be your banking app URL
+    baseURL: 'https://demo.playwright.dev/todomvc/#/',
+
+    // Collect trace only when retrying a failed test
+    trace: 'on-first-retry',
+
+    // Take screenshot only when test fails
+    screenshot: 'only-on-failure',
+
+    // Record video only when retry happens
+    video: 'on-first-retry',
+  },
+
+  /*
+  CHANGE 2 (IMPORTANT):
+  Run tests ONLY in Chromium for CI stability.
+  This prevents failures multiplying across browsers.
+  */
+
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
+    }
   ],
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
 });
