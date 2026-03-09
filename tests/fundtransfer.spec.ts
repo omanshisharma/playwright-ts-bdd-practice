@@ -15,7 +15,7 @@ test('User can transfer money successfully', async ({ page }) => {
   const transferPage = new banktransferPage(page);
 
   // Open banking app
-  await page.goto('https://your-banking-app.com');
+  await page.goto('https://example.com');
 
   // Perform login using POM method
   await bankloginPage.login('user1', 'password');
